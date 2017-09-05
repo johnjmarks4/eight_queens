@@ -1,6 +1,6 @@
 require_relative 'queen'
 
-class ChessBoard
+class ChessBoard < Game
   attr_accessor :board
 
   def initialize
@@ -80,5 +80,14 @@ class ChessBoard
     row = input[0].to_i - 1
     column = alph.index(input[1])
     return row, column
+  end
+
+  def output(output)
+    alph = ('a'..'h').to_a
+
+    output[0] += 1
+    output[1] = alph[output[1]]
+    output = output.join
+    return output
   end
 end
