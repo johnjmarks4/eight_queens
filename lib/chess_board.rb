@@ -48,6 +48,16 @@ class ChessBoard < Game
     print "    a   b   c   d   e   f   g   h"
   end
 
+  def place_queens
+    @board.each_with_index do |row, r|
+      random = rand(0..7)
+      queen = Queen.new
+      queen.place_column(random)
+      queen.place_row(r)
+      @board[r][random] = queen
+    end
+  end
+
   def add_piece
     print "Name the type of piece you would like to add."
 
