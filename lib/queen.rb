@@ -3,20 +3,14 @@ require_relative 'preferences'
 class Queen
   attr_accessor :row, :column, :type, :color, :unicode
 
-  def initialize
+  def initialize(row, column)
     # Color is displayed as white by default unless set to black by colorize method
     case Preferences.set_color
     when :none then   @unicode = "\u265B"
     when :white then  @unicode = "\u265B"
     when :black then  @unicode = "\u2655"
     end
-  end
-
-  def place_row(row)
     @row = row
-  end
-
-  def place_column(column)
     @column = column
   end
 

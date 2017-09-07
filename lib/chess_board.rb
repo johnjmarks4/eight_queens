@@ -6,6 +6,10 @@ class ChessBoard < Game
   def initialize
     @board = Array.new(8).map { Array.new(8) }
     @board.each { |rows| rows.map! { |squares| squares = " " } }
+    @node_values = []
+    @nodes = []
+    @queue = []
+    @stack = []
   end
   
   def show
@@ -48,16 +52,66 @@ class ChessBoard < Game
     print "    a   b   c   d   e   f   g   h"
   end
 
-  def place_queens
-    @board.each_with_index do |row, r|
-      random = rand(0..7)
-      queen = Queen.new
-      queen.place_column(random)
-      queen.place_row(r)
-      @board[r][random] = queen
+  def search
+    queens = 0
+    (0..7).to_a.permutation.to_a.each do |ary|
+      # check each permutation for diagonals
+      ary.each_with_index do |num, i|
+        @board[i][num] = Queen.new(i, num)
+        queens += 1
+      end
+      if queens == 8 && checked? == false
+        show
+        return @board 
+      else
+        queens = 0
+        @board.each { |row| row.map! { |square| square = " " } }
+      end
     end
   end
 
+  def checked?
+    @board.each do |row|
+      row.each do |square|
+        if square.class == Queen
+          # descending-right: 
+          r = square.row + 1
+          c = square.column + 1
+          while r <= 7 && c <= 7
+            return true if @board[r][c].class == Queen
+            c += 1
+            r += 1
+          end
+          # ascending-left:
+          r = square.row + 1
+          c = square.column - 1
+          while r <= 7 && c >= 0
+            return true if @board[r][c].class == Queen
+            c -= 1
+            r += 1
+          end
+          # descending-left:
+          r = square.row - 1
+          c = square.column - 1
+          while r >= 0 && c >= 0
+            return true if @board[r][c].class == Queen
+            c -= 1
+            r -= 1
+          end
+          # descending-right]
+          r = square.row - 1
+          c = square.column + 1
+          while r >= 0 && c <= 7
+            return true if @board[r][c].class == Queen
+            c += 1
+            r -= 1
+          end
+        end
+      end
+    end
+    return false
+  end
+ 
   def add_piece
     print "Name the type of piece you would like to add."
 

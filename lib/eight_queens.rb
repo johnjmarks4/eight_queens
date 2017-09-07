@@ -3,5 +3,6 @@ require_relative 'chess_board'
 require_relative 'queen'
 
 board = ChessBoard.new
-board.place_queens
+board.search
+#board.move_queens
 board.show
