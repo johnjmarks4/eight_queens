@@ -50,8 +50,7 @@ class ChessBoard
 
   def search
     queens = 0
-    (0..7).to_a.permutation.to_a.each do |ary|
-      # check each permutation for diagonals
+    (0..7).to_a.permutation.to_a.shuffle.each do |ary|
       ary.each_with_index do |num, i|
         @board[i][num] = Queen.new(i, num)
         queens += 1
