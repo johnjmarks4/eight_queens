@@ -6,10 +6,6 @@ class ChessBoard < Game
   def initialize
     @board = Array.new(8).map { Array.new(8) }
     @board.each { |rows| rows.map! { |squares| squares = " " } }
-    @node_values = []
-    @nodes = []
-    @queue = []
-    @stack = []
   end
   
   def show
@@ -110,48 +106,5 @@ class ChessBoard < Game
       end
     end
     return false
-  end
- 
-  def add_piece
-    print "Name the type of piece you would like to add."
-
-    piece_type = gets.chomp!
-    piece_type = Object.const_get(piece_type).new
-    
-    print "Where on the board would you like to place it?
-           Type the coordinates (e.g. 7a)."
-
-    row, column = user_input(gets.chomp!)
-    @board[row][column] = piece_type
-  end
-
-  def user_input(input)
-    if input.class == Array
-      input = input.join(", ")
-    end
-
-    if input.match(",")
-      input = input.split(",")
-    elsif input.match(" ")
-      input = input.split(" ")
-    else
-      input.insert 1, " "
-      input = input.split(" ")
-    end
-
-    alph = ('a'..'h').to_a
-
-    row = input[0].to_i - 1
-    column = alph.index(input[1])
-    return row, column
-  end
-
-  def output(output)
-    alph = ('a'..'h').to_a
-
-    output[0] += 1
-    output[1] = alph[output[1]]
-    output = output.join
-    return output
   end
 end
