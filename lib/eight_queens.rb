@@ -1,5 +1,7 @@
 require_relative 'chess_board'
 require_relative 'queen'
+require_relative 'queue'
+require_relative 'node'
 
 class Game
   attr_accessor :board
@@ -7,6 +9,7 @@ class Game
   def initialize
     cb = ChessBoard.new
     @queens = []
+    @queue = Queue.new
     @board_obj = cb
     @board = cb.board
     @s_row = @board[0]
@@ -34,63 +37,73 @@ class Game
   end
 
   def start
-    c = 7
-    @r = 0
-    while @r < 7
-      rec_search(c)
+    # Too many nested loops - how to use recursion to fix?
+    make_row
+    @r = 7
+    while @r >= 0
+      print_board
+      search
     end
   end
 
-  def rec_search(c)
-    if c < 0
-      @s_row = @board[@r -= 1]
-    else
-      @s_row[c] = Queen.new(@r, c, self)
-      @board[@r] = @s_row
-      if in_check?
-        @board[@r][c] = " "
-        @s_row = @board[@r]
-        rec_search(c - 1)
-      else
-        @queens << @s_row[c]
-        @s_row = @board[@r += 1]
+  def search
+    node = @queue.dequeue
+    c = node.col_num
+    @board[@r] = node.row
+    until in_check?(@r, c) == false
+      node = @queue.dequeue
+      @board[@r] = node.row
+      c += 1
+      if c > 7
+        return @r += 1
       end
+    end
+    make_row
+    @r -= 1
+  end
+
+  def make_row
+    8.times do |i|
+      ary = Array.new(8).map! { |s| s = " " }
+      ary[i] = Queen.new(self)
+      node = Node.new(ary, i)
+      @queue.enqueue(node)
     end
   end
 
   def perm_in_check?
-    @board.each do |row|
-      row.each do |square|
-        if square.class == Queen
+    @board.each_with_index do |_, x|
+      row.each_with_index do |_, y|
+        if board[r][c] == "Q"
           # descending-right: 
-          r = square.r + 1
-          c = square.c + 1
+          r = x + 1
+          c = y + 1
           while r <= 7 && c <= 7
-            return true if board[r][c].class == Queen
+            return true if board[r][c] == "Q"
             c += 1
             r += 1
           end
           # ascending-left:
-          r = square.r + 1
-          c = square.c - 1
+          r = x + 1
+          c = u=y - 1
           while r <= 7 && c >= 0
-            return true if board[r][c].class == Queen
+            return true if board[r][c] == "Q"
             c -= 1
             r += 1
           end
           # descending-left:
-          r = square.r - 1
-          c = square.c - 1
+          r = x - 1
+          c = y - 1
           while r >= 0 && c >= 0
-            return true if board[r][c].class == Queen
+            return true if board[r][c] == "Q"
             c -= 1
             r -= 1
           end
           # descending-right]
-          r = square.r - 1
-          c = square.c + 1
+          r = x - 1
+          c = y + 1
           while r >= 0 && c <= 7
-            return true if board[r][c].class == Queen
+            return true if board[r][c] == "Q"
             c += 1
             r -= 1
           end
@@ -100,15 +113,15 @@ class Game
     return false
   end
 
-  def in_check?
-    @queens.each do |q|
-      return true if q.can_take_piece? == true
+  def in_check?(r, c)
+    if @board[r][c].can_take_piece?(r, c)
+      true
+    else
+      false
     end
-    false
   end
 end
 
 game = Game.new
 #game.permutations_strategy
 game.start
-game.print_board

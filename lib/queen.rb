@@ -1,16 +1,15 @@
 class Queen
   attr_accessor :r, :c, :unicode
 
-  def initialize(row, column, game)
+  def initialize(game)
     @game = game
-    @r = row
-    @c = column
     @unicode = "\u265B" #display color as white
     # @unicode = "\u2655" #display color as black
   end
 
-  def can_take_piece?
-    moves = [asc_right, asc_left, desc_left, desc_right, up, down, right, left]
+  def can_take_piece?(r, c)
+    @r, @c = r, c
+    moves = [asc_left, asc_right, up]
     moves.any? { |m| m == true }
   end
 
