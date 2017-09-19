@@ -8,11 +8,10 @@ class Game
 
   def initialize
     cb = ChessBoard.new
-    @queens = []
     @queue = Queue.new
     @board_obj = cb
     @board = cb.board
-    @s_row = @board[0]
+    @current_child = []
   end
 
   def print_board
@@ -37,38 +36,46 @@ class Game
   end
 
   def start
-    # Too many nested loops - how to use recursion to fix?
-    make_row
+    make_child
     @r = 7
     while @r >= 0
+      # Row will have changed
       print_board
       search
     end
   end
 
   def search
-    node = @queue.dequeue
-    c = node.col_num
-    @board[@r] = node.row
-    until in_check?(@r, c) == false
-      node = @queue.dequeue
+    until @current_child.empty?
+      node = @current_child.pop # OK for it to act like a stack?
       @board[@r] = node.row
-      c += 1
-      if c > 7
-        return @r += 1
+      if in_check?(@r, node.col_num) == false
+        forward
       end
     end
-    make_row
+    backtrack
+  end
+
+  def backtrack
+    @board[@r] = Array.new(8).map! { |s| s = " " }
+    @current_child = @queue.dequeue
+    @r += 1
+  end
+
+  def forward
+    @queue.enqueue(@current_child)
+    @current_child = make_child
     @r -= 1
   end
 
-  def make_row
+  def make_child
     8.times do |i|
       ary = Array.new(8).map! { |s| s = " " }
       ary[i] = Queen.new(self)
       node = Node.new(ary, i)
-      @queue.enqueue(node)
+      @current_child << node
     end
+    @current_child
   end
 
   def perm_in_check?
