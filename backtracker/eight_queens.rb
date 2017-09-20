@@ -12,6 +12,7 @@ class Game
     @board_obj = cb
     @board = cb.board
     @r = 7
+    @node_values = []
     @current_child = []
     @current_child = make_child
   end
@@ -22,8 +23,10 @@ class Game
 
   def search
     # Is this depth first? If it was depth first, wouldn't you backtrack after a single check?
+    # Gets stuck in certain places. Need to record node values in own variable.
     until @current_child.empty?
       node = @current_child.pop
+      @node_values << node
       @board[@r] = node.row
       if @board[@r][node.col_num].can_take_piece?(@r, node.col_num, self) == false
         if @r == 0
@@ -42,7 +45,8 @@ class Game
     @board[@r] = Array.new(8).map! { |s| s = " " }
     until @current_child.empty? == false
       if @queue.queue.empty?
-        @current_child = make_child
+        ary = make_child
+        @current_child = ary.select { |r| !@node_values.include?(r) }
       else
         @current_child = @queue.dequeue
       end
@@ -52,7 +56,8 @@ class Game
 
   def forward
     @queue.enqueue(@current_child)
-    @current_child = make_child
+    ary = make_child
+    @current_child = ary.select { |r| !@node_values.include?(r) }
     @r -= 1
   end
 
