@@ -42,7 +42,6 @@ class Game
       node = @current_child.pop # OK for it to act like a stack?
       @board[@r] = node.row
       if in_check?(@r, node.col_num) == false
-        @r -= 1
         if @r == 0
           print_board
           return @board
