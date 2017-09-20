@@ -66,9 +66,7 @@ class Game
       ary = Array.new(8).map! { |s| s = " " }
       ary[i] = Queen.new
       parent = []
-      @board.each_with_index do |r, i|
-        parent << r if i >= @r
-      end
+      @board.each { |r| parent << r }
       node = Node.new(ary, i, parent)
       @current_child << node
       @current_child = @current_child.shuffle
