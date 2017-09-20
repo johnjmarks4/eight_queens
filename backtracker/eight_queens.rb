@@ -21,10 +21,11 @@ class Game
   end
 
   def search
+    # Is this depth first? If it was depth first, wouldn't you backtrack after a single check?
     until @current_child.empty?
-      node = @current_child.pop # OK for it to act like a stack?
+      node = @current_child.pop
       @board[@r] = node.row
-      if in_check?(@r, node.col_num) == false
+      if @board[@r][node.col_num].can_take_piece?(@r, node.col_num, self) == false
         if @r == 0
           print_board
           return @board
@@ -58,23 +59,14 @@ class Game
   def make_child
     8.times do |i|
       ary = Array.new(8).map! { |s| s = " " }
-      ary[i] = Queen.new(self)
+      ary[i] = Queen.new
       node = Node.new(ary, i)
       @current_child << node
       @current_child = @current_child.shuffle
     end
     @current_child
   end
-
-  def in_check?(r, c)
-    if @board[r][c].can_take_piece?(r, c)
-      true
-    else
-      false
-    end
-  end
 end
 
 game = Game.new
-#game.permutations_strategy
 game.search

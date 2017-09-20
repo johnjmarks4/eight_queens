@@ -1,13 +1,13 @@
 class Queen
   attr_accessor :r, :c, :unicode
 
-  def initialize(game)
-    @game = game
+  def initialize
     @unicode = "\u265B" #display color as white
     # @unicode = "\u2655" #display color as black
   end
 
-  def can_take_piece?(r, c)
+  def can_take_piece?(r, c, game)
+    @board = game.board
     @r, @c = r, c
     moves = [asc_left, asc_right, up]
     moves.any? { |m| m == true }
@@ -17,7 +17,7 @@ class Queen
     r = @r + 1
     c = @c + 1
     while r <= 7 && c <= 7
-      return true if @game.board[r][c].is_a?(Queen)
+      return true if @board[r][c].is_a?(Queen)
       c += 1
       r += 1
     end
@@ -27,7 +27,7 @@ class Queen
     r = @r + 1
     c = @c - 1
     while r <= 7 && c >= 0
-      return true if @game.board[r][c].is_a?(Queen)
+      return true if @board[r][c].is_a?(Queen)
       c -= 1
       r += 1
     end
@@ -37,7 +37,7 @@ class Queen
     r = @r - 1
     c = @c - 1
     while r >= 0 && c >= 0
-      return true if @game.board[r][c].is_a?(Queen)
+      return true if @board[r][c].is_a?(Queen)
       c -= 1
       r -= 1
     end
@@ -47,7 +47,7 @@ class Queen
     r = @r - 1
     c = @c + 1
     while r >= 0 && c <= 7
-      return true if @game.board[r][c].is_a?(Queen)
+      return true if @board[r][c].is_a?(Queen)
       c += 1
       r -= 1
     end
@@ -56,7 +56,7 @@ class Queen
   def right
     c = @c + 1
     while c <= 7
-      return true if @game.board[@r][c].is_a?(Queen)
+      return true if @board[@r][c].is_a?(Queen)
       c += 1
     end
   end
@@ -64,7 +64,7 @@ class Queen
   def left
     c = @c - 1
     while c >= 0
-      return true if @game.board[@r][c].is_a?(Queen)
+      return true if @board[@r][c].is_a?(Queen)
       c -= 1
     end
   end
@@ -72,7 +72,7 @@ class Queen
   def up
     r = @r + 1
     while r <= 7
-      return true if @game.board[r][@c].is_a?(Queen)
+      return true if @board[r][@c].is_a?(Queen)
       r += 1
     end
   end
@@ -80,7 +80,7 @@ class Queen
   def down
     r = @r - 1
     while r >= 0
-      return true if @game.board[r][@c].is_a?(Queen)
+      return true if @board[r][@c].is_a?(Queen)
       r -= 1
     end
   end
