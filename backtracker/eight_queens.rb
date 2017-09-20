@@ -22,8 +22,6 @@ class Game
   end
 
   def search
-    # Is this depth first? If it was depth first, wouldn't you backtrack after a single check?
-    # Gets stuck in certain places. Need to record node values in own variable.
     until @current_child.empty?
       node = @current_child.pop
       @node_values << node.id
