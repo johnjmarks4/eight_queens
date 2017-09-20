@@ -21,17 +21,17 @@ class Game
   end
 
   def permutations_strategy
-    @queens = []
+    queens = 0
     (0..7).to_a.permutation.to_a.shuffle.each do |ary|
       ary.each_with_index do |num, i|
         @board[i][num] = Queen.new(i, num, self)
-        @queens << @board[i][num]
+        queens << @board[i][num]
       end
-      if @queens.length == 8 && in_check? == false
+      if queens == 8 && perm_in_check? == false
         print_board
         return @board 
       else
-        @queens = []
+        queens = 0
         @board.each { |row| row.map! { |square| square = " " } }
       end
     end
