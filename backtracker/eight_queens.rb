@@ -26,7 +26,7 @@ class Game
     # Gets stuck in certain places. Need to record node values in own variable.
     until @current_child.empty?
       node = @current_child.pop
-      @node_values << node
+      @node_values << node.id
       @board[@r] = node.row
       if @board[@r][node.col_num].can_take_piece?(@r, node.col_num, self) == false
         if @r == 0
@@ -45,8 +45,8 @@ class Game
     @board[@r] = Array.new(8).map! { |s| s = " " }
     until @current_child.empty? == false
       if @queue.queue.empty?
-        ary = make_child
-        @current_child = ary.select { |r| !@node_values.include?(r) }
+        child = make_child
+        @current_child = child.select { |r| !@node_values.include?(r.id) }
       else
         @current_child = @queue.dequeue
       end
@@ -56,8 +56,8 @@ class Game
 
   def forward
     @queue.enqueue(@current_child)
-    ary = make_child
-    @current_child = ary.select { |r| !@node_values.include?(r) }
+    child = make_child
+    @current_child = child.select { |r| !@node_values.include?(r.id) }
     @r -= 1
   end
 
@@ -65,7 +65,11 @@ class Game
     8.times do |i|
       ary = Array.new(8).map! { |s| s = " " }
       ary[i] = Queen.new
-      node = Node.new(ary, i)
+      parent = []
+      @board.each_with_index do |r, i|
+        parent << r if i >= @r
+      end
+      node = Node.new(ary, i, parent)
       @current_child << node
       @current_child = @current_child.shuffle
     end
