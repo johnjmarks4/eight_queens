@@ -4,7 +4,7 @@ require_relative 'queue'
 require_relative 'node'
 
 class Game
-  attr_accessor :board
+  attr_accessor :board, :queens
 
   def initialize
     cb = ChessBoard.new
@@ -14,6 +14,7 @@ class Game
     @r = 7
     @node_values = []
     @current_child = []
+    @queens = []
     @current_child = make_child
   end
 
@@ -41,6 +42,7 @@ class Game
 
   def backtrack
     @board[@r] = Array.new(8).map! { |s| s = " " }
+    @queens.pop
     until @current_child.empty? == false
       if @queue.queue.empty?
         child = make_child
@@ -62,7 +64,8 @@ class Game
   def make_child
     8.times do |i|
       ary = Array.new(8).map! { |s| s = " " }
-      ary[i] = Queen.new
+      ary[i] = Queen.new(@r, i)
+      @queens << Queen.new(@r, i)
       parent = []
       @board.each { |r| parent << r }
       node = Node.new(ary, i, parent)
