@@ -20,10 +20,17 @@ class Game
   end
 
   def in_check?
-    @queens.last.in_check?(@queens)
+    queen = @queens.last
+    remove(queen) if queen.in_check?(@queens)
+  end
+
+  def remove(queen)
+    @queens.pop
+    @board[queen.r][queen.c] = " "
   end
 end
 
 game = Game.new
 game.print_board
-print game.in_check?
+game.in_check?
+game.print_board
