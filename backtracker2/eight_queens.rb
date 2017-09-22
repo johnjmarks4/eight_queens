@@ -16,22 +16,22 @@ class Game
   end
 
   def solution
-    @r = 7
+    r = 7
     #while @r > 0
     2.times do
-      success = search
+      success = search(r)
       if success == true
-        @r -= 1
+        r -= 1
       else
-        @r += 1
+        r += 1
       end
     end
   end
 
-  def search#(row)
+  def search(r)
     8.times do |c|
-      @board[@r][c] = Queen.new(@r, c)
-      @queens << Queen.new(@r, c)
+      @board[r][c] = Queen.new(r, c)
+      @queens << Queen.new(r, c)
       if in_check? != true
         return true
       end
