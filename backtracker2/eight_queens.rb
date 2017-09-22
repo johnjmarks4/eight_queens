@@ -15,9 +15,9 @@ class Game
     r = 7
     init = 0
     while queens.length < 7
+      queens = []
       queens = search(r, init, queens)
       init += 1
-      #queens = []
     end
     show_board(queens)
   end
