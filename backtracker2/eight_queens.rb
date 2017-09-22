@@ -11,41 +11,42 @@ class Game
   end
 
   def solution
-    @queens = []
+    queens = []
     r = 7
     init = 0
-    while @queens.length < 7
-      search(r, init)
+    while queens.length < 7
+      queens = search(r, init, queens)
       init += 1
+      #queens = []
     end
-    show_board
+    show_board(queens)
   end
 
-  def show_board
-    @queens.each { |q| @board[q[0]][q[1]] = Queen.new }
+  def show_board(queens)
+    queens.each { |q| @board[q[0]][q[1]] = Queen.new }
     @board_obj.show
   end
 
-  def search(r, init)
+  def search(r, init, queens)
     if r == 0
-      return
+      return queens
     else
       (init..7).to_a.each do |i|
-        @queens << [r, i]
-        if in_check? == false
-          break # not return, right?
+        queens << [r, i]
+        if in_check?(queens) == false
+          break
         else
-          @queens.pop
+          queens.pop
         end
       end
-      if r < 7 then init = 0 end
-      search(r -= 1, init)
+      init = 0
+      search(r -= 1, init, queens)
     end
   end
 
-  def in_check?
+  def in_check?(queens)
     sums = []
-    @queens.each do |pos|
+    queens.each do |pos|
       sums << pos[1]
     end
     if sums.length != sums.uniq.length
@@ -53,7 +54,7 @@ class Game
     end
 
     sums = []
-    @queens.each do |pos|
+    queens.each do |pos|
       sums << (pos[0] + pos[1])
     end
     if sums.length != sums.uniq.length
@@ -61,7 +62,7 @@ class Game
     end
 
     sums = []
-    @queens.each do |pos|
+    queens.each do |pos|
       sums << (pos[0] - pos[1])
     end
     if sums.length != sums.uniq.length
