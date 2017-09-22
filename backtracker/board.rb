@@ -1,6 +1,6 @@
 require_relative 'queen'
 
-class ChessBoard
+class Board
   attr_accessor :board
 
   def initialize

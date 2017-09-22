@@ -1,80 +1,76 @@
-require_relative 'chess_board'
+require_relative 'board'
 require_relative 'queen'
-require_relative 'queue'
-require_relative 'node'
 
 class Game
-  attr_accessor :board, :queens
+  attr_accessor :board
 
   def initialize
-    cb = ChessBoard.new
-    @queue = Queue.new
-    @board_obj = cb
-    @board = cb.board
-    @r = 7
-    @node_values = []
-    @current_child = []
-    @queens = []
-    @current_child = make_child
+    b = Board.new
+    @board_obj = b
+    @board = b.board
   end
 
-  def print_board
-    @board_obj.show
+  def solution
+    queens = []
+    r = 7
+    init = 0
+    while queens.length < 7
+      queens = []
+      queens = search(r, init, queens)
+      init += 1
+    end
+    show_board(queens)
   end
 
-  def search
-    until @current_child.empty?
-      node = @current_child.pop
-      @node_values << node.id
-      @board[@r] = node.row
-      if @board[@r][node.col_num].can_take_piece?(@r, node.col_num, self) == false
-        if @r == 0
-          print_board
-          return @board
+  def search(r, init, queens)
+    if r < 0
+      return queens
+    else
+      (init..7).to_a.each do |i|
+        queens << [r, i]
+        if in_check?(queens) == false
+          break
         else
-          forward
+          queens.pop
         end
       end
+      init = 0
+      search(r -= 1, init, queens)
     end
-    backtrack
-    search
   end
 
-  def backtrack
-    @board[@r] = Array.new(8).map! { |s| s = " " }
-    @queens.pop
-    until @current_child.empty? == false
-      if @queue.queue.empty?
-        child = make_child
-        @current_child = child.select { |r| !@node_values.include?(r.id) }
-      else
-        @current_child = @queue.dequeue
-      end
+  def in_check?(queens)
+    sums = []
+    queens.each do |pos|
+      sums << pos[1]
     end
-    @r += 1
+    if sums.length != sums.uniq.length
+      return true
+    end
+
+    sums = []
+    queens.each do |pos|
+      sums << (pos[0] + pos[1])
+    end
+    if sums.length != sums.uniq.length
+      return true
+    end
+
+    sums = []
+    queens.each do |pos|
+      sums << (pos[0] - pos[1])
+    end
+    if sums.length != sums.uniq.length
+      return true
+    end
+    false
   end
 
-  def forward
-    @queue.enqueue(@current_child)
-    child = make_child
-    @current_child = child.select { |r| !@node_values.include?(r.id) }
-    @r -= 1
-  end
-
-  def make_child
-    8.times do |i|
-      ary = Array.new(8).map! { |s| s = " " }
-      ary[i] = Queen.new(@r, i)
-      @queens << Queen.new(@r, i)
-      parent = []
-      @board.each { |r| parent << r }
-      node = Node.new(ary, i, parent)
-      @current_child << node
-      @current_child = @current_child.shuffle
-    end
-    @current_child
+  def show_board(queens)
+    queens.each { |q| @board[q[0]][q[1]] = Queen.new }
+    @board_obj.show
   end
 end
 
 game = Game.new
-game.search
+game.solution
