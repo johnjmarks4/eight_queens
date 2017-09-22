@@ -40,30 +40,17 @@ class Game
   end
 
   def in_check?(queens)
-    sums = []
+    cols, nw_diag, se_diag = [], [], []
+
     queens.each do |pos|
-      sums << pos[1]
-    end
-    if sums.length != sums.uniq.length
-      return true
+      cols << pos[1]
+      nw_diag << (pos[0] + pos[1])
+      se_diag << (pos[0] - pos[1])
     end
 
-    sums = []
-    queens.each do |pos|
-      sums << (pos[0] + pos[1])
+    [cols, nw_diag, se_diag].any? do |ary|
+      ary.length != ary.uniq.length
     end
-    if sums.length != sums.uniq.length
-      return true
-    end
-
-    sums = []
-    queens.each do |pos|
-      sums << (pos[0] - pos[1])
-    end
-    if sums.length != sums.uniq.length
-      return true
-    end
-    false
   end
 
   def show_board(queens)
