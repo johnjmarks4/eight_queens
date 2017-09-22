@@ -3,15 +3,19 @@ class Game
   def solution
     @queens = []
     r = 7
-    search(r)
+    init = 0
+    while @queens.length < 7
+      search(r, init)
+      init += 1
+    end
     @queens
   end
 
-  def search(r)
+  def search(r, init)
     if r == 0
       return
     else
-      7.times do |i|
+      (init..7).to_a.each do |i|
         @queens << [r, i]
         if in_check? == false
           break # not return, right?
@@ -19,7 +23,8 @@ class Game
           @queens.pop
         end
       end
-      search(r -= 1)
+      if r < 7 then init = 0 end
+      search(r -= 1, init)
     end
   end
 
