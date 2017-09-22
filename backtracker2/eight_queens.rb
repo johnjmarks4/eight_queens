@@ -9,10 +9,34 @@ class Game
     @board = @board_obj.board
     @queens = []
 
-    @board[7][1] = Queen.new(7, 1)
-    @queens << Queen.new(7, 1)
-    @board[6][1] = Queen.new(6, 1)
-    @queens << Queen.new(6, 1)
+    #@board[7][1] = Queen.new(7, 1)
+    #@queens << Queen.new(7, 1)
+    #@board[6][1] = Queen.new(6, 1)
+    #@queens << Queen.new(6, 1)
+  end
+
+  def solution
+    @r = 7
+    #while @r > 0
+    2.times do
+      success = search
+      if success == true
+        @r -= 1
+      else
+        @r += 1
+      end
+    end
+  end
+
+  def search#(row)
+    8.times do |c|
+      @board[@r][c] = Queen.new(@r, c)
+      @queens << Queen.new(@r, c)
+      if in_check? != true
+        return true
+      end
+    end
+    false
   end
 
   def print_board
@@ -21,7 +45,12 @@ class Game
 
   def in_check?
     queen = @queens.last
-    remove(queen) if queen.in_check?(@queens)
+    if queen.in_check?(@queens)
+      remove(queen)
+      true
+    else
+      false
+    end
   end
 
   def remove(queen)
@@ -32,5 +61,5 @@ end
 
 game = Game.new
 game.print_board
-game.in_check?
+game.solution
 game.print_board
