@@ -22,13 +22,8 @@ class Game
     show_board(queens)
   end
 
-  def show_board(queens)
-    queens.each { |q| @board[q[0]][q[1]] = Queen.new }
-    @board_obj.show
-  end
-
   def search(r, init, queens)
-    if r == 0
+    if r < 0
       return queens
     else
       (init..7).to_a.each do |i|
@@ -69,6 +64,11 @@ class Game
       return true
     end
     false
+  end
+
+  def show_board(queens)
+    queens.each { |q| @board[q[0]][q[1]] = Queen.new }
+    @board_obj.show
   end
 end
 
