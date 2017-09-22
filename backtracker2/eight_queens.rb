@@ -1,4 +1,14 @@
+require_relative 'board'
+require_relative 'queen'
+
 class Game
+  attr_accessor :board
+
+  def initialize
+    b = Board.new
+    @board_obj = b
+    @board = b.board
+  end
 
   def solution
     @queens = []
@@ -8,7 +18,12 @@ class Game
       search(r, init)
       init += 1
     end
-    @queens
+    show_board
+  end
+
+  def show_board
+    @queens.each { |q| @board[q[0]][q[1]] = Queen.new }
+    @board_obj.show
   end
 
   def search(r, init)
@@ -57,4 +72,4 @@ class Game
 end
 
 game = Game.new
-print game.solution
+game.solution
