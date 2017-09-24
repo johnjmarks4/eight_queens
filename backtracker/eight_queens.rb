@@ -12,14 +12,20 @@ class Game
 
   def solution
     queens = []
+    solutions = []
     r = 7
-    init = 0
-    while queens.length < 7
+    while solutions.length < 92
+      init = 0
       queens = []
-      queens = search(r, init, queens)
-      init += 1
+      while queens.length < 7
+        queens = []
+        queens = search(r, init, queens)
+        init += 1
+      end
+      solutions << queens
+      solutions.uniq!
     end
-    show_board(queens)
+    solutions.each { |s| show_board(s) }
   end
 
   def search(r, init, queens)
@@ -53,7 +59,12 @@ class Game
     end
   end
 
+  def clear_board
+    @board.each { |rows| rows.map! { |squares| squares = " " } }
+  end
+
   def show_board(queens)
+    clear_board
     queens.each { |q| @board[q[0]][q[1]] = Queen.new }
     @board_obj.show
   end
