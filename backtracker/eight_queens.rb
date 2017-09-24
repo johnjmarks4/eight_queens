@@ -26,7 +26,7 @@ class Game
     if r < 0
       return queens
     else
-      (init..7).to_a.each do |i|
+      (init..7).to_a.shuffle.each do |i|
         queens << [r, i]
         if in_check?(queens) == false
           break
