@@ -1,8 +1,6 @@
 require_relative 'board'
 require_relative 'queen'
 
-public
-
 def permutations_strategy
   chess = Board.new
   queens = []
