@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'queen'
+require 'benchmark'
 
 def permutations_strategy
   chess = Board.new
@@ -30,6 +31,11 @@ def in_check?(queens)
   [nw_diag, se_diag].any? do |ary|
     ary.length != ary.uniq.length
   end
+end
+
+def benchmark(num)
+  value = Benchmark.measure { num.times { permutations_strategy } }
+  avg_run_time = value / num
 end
 
 permutations_strategy

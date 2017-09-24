@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'queen'
+require 'benchmark'
 
 class Game
   attr_accessor :board
@@ -67,6 +68,11 @@ class Game
     clear_board
     queens.each { |q| @board[q[0]][q[1]] = Queen.new }
     @board_obj.show
+  end
+
+  def benchmark(num)
+    value = Benchmark.measure { num.times { solution } }
+    avg_run_time = value / num
   end
 end
 
