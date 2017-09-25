@@ -9,10 +9,9 @@ def solution
   while solutions.length < 92
     init = 0
     queens = []
-    while queens.length < 7
+    while queens.length < 8
       queens = []
-      queens = search(r, init, queens)
-      init += 1
+      queens = search(r, queens)
     end
     solutions << queens
     solutions.uniq!
@@ -20,11 +19,11 @@ def solution
   solutions.each { |s| show_board(s) }
 end
 
-def search(r, init, queens)
+def search(r, queens)
   if r < 0
     return queens
   else
-    (init..7).to_a.shuffle.each do |i|
+    (0..7).to_a.shuffle.each do |i|
       queens << [r, i]
       if in_check?(queens) == false
         break
@@ -32,8 +31,7 @@ def search(r, init, queens)
         queens.pop
       end
     end
-    init = 0
-    search(r -= 1, init, queens)
+    search(r -= 1, queens)
   end
 end
 
